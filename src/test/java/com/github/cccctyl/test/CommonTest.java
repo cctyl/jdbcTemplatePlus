@@ -1,4 +1,4 @@
-package com.github.cccctyl;
+package com.github.cccctyl.test;
 
 import com.github.cccctyl.utils.SqlGenrator;
 import org.junit.Test;

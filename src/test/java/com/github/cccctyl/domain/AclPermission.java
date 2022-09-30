@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.LocalDate;
+
 import org.hibernate.annotations.GenericGenerator;
 
 /**

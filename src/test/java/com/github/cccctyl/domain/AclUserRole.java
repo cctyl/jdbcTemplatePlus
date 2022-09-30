@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.time.LocalDate;
+
 import org.hibernate.annotations.GenericGenerator;
 
 /**
@@ -18,11 +17,11 @@ import org.hibernate.annotations.GenericGenerator;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "acl_role_permission")
-public class AclRolePermission implements Serializable {
+@Table(name = "acl_user_role")
+public class AclUserRole implements Serializable {
 
 	/**
-	 * null
+	 * 主键id
 	 */
 	@Id
 	@GeneratedValue(generator="system-uuid")
@@ -31,16 +30,16 @@ public class AclRolePermission implements Serializable {
 	private String id;
 
 	/**
-	 * null
+	 * 角色id
 	 */
 	@Column(name = "role_id", nullable = false)
 	private String roleId;
 
 	/**
-	 * null
+	 * 用户id
 	 */
-	@Column(name = "permission_id", nullable = false)
-	private String permissionId;
+	@Column(name = "user_id", nullable = false)
+	private String userId;
 
 	/**
 	 * 逻辑删除 1（true）已删除， 0（false）未删除

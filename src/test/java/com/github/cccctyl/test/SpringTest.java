@@ -1,8 +1,7 @@
-package com.github.cccctyl;
+package com.github.cccctyl.test;
 
-import cn.hutool.core.lang.func.Func;
+import com.github.cccctyl.Application;
 import com.github.cccctyl.domain.*;
-import com.github.cccctyl.handler.SimpleTypeHandler;
 import com.github.cccctyl.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -12,14 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.persistence.*;
-import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)

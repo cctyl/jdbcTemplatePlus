@@ -1,13 +1,10 @@
 package com.github.cccctyl.utils;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
 import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
