@@ -10,10 +10,10 @@ public abstract class MapToTable<T,R> {
 
     private List<Map<String, Object>> mapList = null;
 
-    public void mapMany(T mainObj, TargetTable childTable, String propertyName) {
+    public void mapMany(T mainObj, TargetTable childTable, SFunction<T,?> column) {
         try {
             Class<?> mainObjClass = mainObj.getClass();
-            Field declaredField = mainObjClass.getDeclaredField(propertyName);
+            Field declaredField = LambdaUtil.extractColum(column);
             declaredField.setAccessible(true);
 
             Class<?> collectionType = declaredField.getType();
@@ -44,7 +44,7 @@ public abstract class MapToTable<T,R> {
                 throw new RuntimeException("将要封装的目标类型不应为数组，应是可变长度的集合");
             } else {
                 //不是数组也不是集合，无法封装，抛出异常
-                throw new RuntimeException("将要封装的目标类型错误，请检查propertyName=" + propertyName + "是否为集合或数组类型");
+                throw new RuntimeException("将要封装的目标类型错误，请检查propertyName=" + declaredField.getName() + "是否为集合或数组类型");
             }
 
 

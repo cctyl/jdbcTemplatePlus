@@ -3,10 +3,7 @@ package com.github.cccctyl;
 import cn.hutool.core.lang.func.Func;
 import com.github.cccctyl.domain.*;
 import com.github.cccctyl.handler.SimpleTypeHandler;
-import com.github.cccctyl.utils.MapToTable;
-import com.github.cccctyl.utils.SFunction;
-import com.github.cccctyl.utils.SqlGenrator;
-import com.github.cccctyl.utils.TargetTable;
+import com.github.cccctyl.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +13,10 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.persistence.*;
+import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -33,8 +33,11 @@ public class SpringTest {
 
 
 
+
+
+
     @Test
-    public void test01(){
+    public void test01LambdaPlus(){
 
         // =========================参数准备========================
         SqlGenrator sqlGen = new SqlGenrator();
@@ -76,7 +79,7 @@ public class SpringTest {
             public void mapToChildObj(List<Map<String, Object>> tempList, AclUser mainObj) {
                 //在这里进行子对象封装
                 //roleList
-                mapMany(mainObj, tRole, "roleList");
+                mapMany(mainObj, tRole, AclUser::getRoleList);
             }
         }.genrator(mapList, tUser);
 
@@ -84,6 +87,15 @@ public class SpringTest {
 
     }
 
+
+
+    @Test
+    public void test02(){
+
+        Field field = LambdaUtil.extractColum(AclUser::getId);
+        System.out.println(field);
+
+    }
 
 
 
