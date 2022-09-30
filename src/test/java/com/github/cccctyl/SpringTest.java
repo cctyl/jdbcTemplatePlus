@@ -37,10 +37,10 @@ public class SpringTest {
 
         // =========================参数准备========================
         SqlGenrator sqlGen = new SqlGenrator();
-        TargetTable<String,AclUser> tUser = sqlGen.targetTable(AclUser.class);
-        TargetTable<String,AclRole> tRoleList = sqlGen.targetTable(AclUser::getRoleList);
-        TargetTable<String,AclRole> tRole = sqlGen.targetTable(AclUser::getRole);
-        TargetTable<String,AclUserRole> tUserRole = sqlGen.targetTable(AclUserRole.class);
+        TargetTable<String, AclUser> tUser = sqlGen.targetTable(AclUser.class);
+        TargetTable<String, AclRole> tRoleList = sqlGen.targetTable(AclUser::getRoleList);
+        TargetTable<String, AclRole> tRole = sqlGen.targetTable(AclUser::getRole);
+        TargetTable<String, AclUserRole> tUserRole = sqlGen.targetTable(AclUserRole.class);
 
         // ======================查询部分===========================
         String column = sqlGen.genColumn(tUser, tRoleList, tRole);

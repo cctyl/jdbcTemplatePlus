@@ -36,18 +36,7 @@ todo: 本质只使用了jpa的Id 注解和 @Column注解，后续会逐步创建
 那么示例如下：
 
 ```java
-    @Test
-    public void test01LambdaPlus(){
-
-        // =========================参数准备========================
-        SqlGenrator sqlGen = new SqlGenrator();
-        TargetTable<String> tUser = sqlGen.targetTable(AclUser.class);
-        TargetTable<String> tRoleList = sqlGen.targetTable(AclUser::getRoleList);
-        TargetTable<String> tRole = sqlGen.targetTable(AclUser::getRole);
-        TargetTable<String> tUserRole = sqlGen.targetTable(AclUserRole.class);
-
-        // ======================查询部分===========================
-        /*
+/*
             目标sql为
                 SELECT
                   r.*
@@ -61,43 +50,55 @@ todo: 本质只使用了jpa的Id 注解和 @Column注解，后续会逐步创建
                   	ON ur.`role_id` = r.id
                 WHERE u.id = 1 ;
 
+*/   
 
+@Test
+public void test01LambdaPlus() {
 
-         */
-         String column = sqlGen.genColumn(tUser, tRoleList, tRole);
-        sqlGen.select(column)
-                .from(tUser)
-                .lJoin(tUserRole)
-                .on(tUser.id() + "=" + tUserRole.col("user_id"))
+    // =========================参数准备========================
+    SqlGenrator sqlGen = new SqlGenrator();
+    TargetTable<String, AclUser> tUser = sqlGen.targetTable(AclUser.class);
+    TargetTable<String, AclRole> tRoleList = sqlGen.targetTable(AclUser::getRoleList);
+    TargetTable<String, AclRole> tRole = sqlGen.targetTable(AclUser::getRole);
+    TargetTable<String, AclUserRole> tUserRole = sqlGen.targetTable(AclUserRole.class);
 
-                .lJoin(tRoleList)
-                .on(tUserRole.col("role_id") + "=" + tRoleList.id())
+    // ======================查询部分===========================
+    String column = sqlGen.genColumn(tUser, tRoleList, tRole);
+    sqlGen.select(column)
+        .from(tUser)
+        .lJoin(tUserRole)
+        .on(tUser.id() + "=" + tUserRole.col("user_id"))
 
-                .lJoin(tRole)
-                .on(tUserRole.col("role_id") + "=" + tRole.id())
+        .lJoin(tRoleList)
+        .on(tUserRole.col("role_id") + "=" + tRoleList.id())
 
+        .lJoin(tRole)
+        .on(tUserRole.col("role_id") + "=" + tRole.id())
 
-                .where(tUser.col(tUser.getIdColumnName()) + "=:userId ")
+        .where(tUser.id() + "=:userId")
+        .and(tUser.col("token") + "=:token")
+        .and(tUser.col("password") + "=:password")
         ;
-        sqlGen.addParam("userId", 1);
+    sqlGen.addParam("userId", 1);
+    sqlGen.addParam("token", "sss");
+    sqlGen.addParam("password", "e10adc3949ba59abbe56e057f20f883e");
 
-        // ===================封装部分==============================
-        List<AclUser> genrator = new MapToTable<AclUser, String>() {
-            @Override
-            public void mapToChildObj(List<Map<String, Object>> tempList, AclUser mainObj) {
-                //在这里进行子对象封装
-                //roleList
-                mapMany(mainObj, tRoleList, AclUser::getRoleList);
+    // ===================封装部分==============================
+    List<AclUser> genrator = new MapToTable<AclUser, String>() {
+        @Override
+        public void mapToChildObj(List<Map<String, Object>> tempList, AclUser mainObj) {
+            //在这里进行子对象封装
+            //roleList
+            mapMany(mainObj, tRoleList, AclUser::getRoleList);
 
-                //role
-                mapOne(mainObj, tRole, AclUser::getRole);
-            }
-        }.genrator(sqlGen.queryForList(namedParameterJdbcTemplate), tUser);
+            //role
+            mapOne(mainObj, tRole, AclUser::getRole);
+        }
+    }.genrator(sqlGen.queryForList(namedParameterJdbcTemplate), tUser);
 
+    System.out.println("end");
+}
 
-        System.out.println("end");
-
-    }
 
 
 ```
