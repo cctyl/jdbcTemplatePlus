@@ -16,8 +16,7 @@ import java.util.stream.Collectors;
 /**
  * @param <R> 主键类型
  */
-@Data
-@NoArgsConstructor
+
 public class TargetTable<R, T> {
 
     private String originName;
@@ -27,6 +26,33 @@ public class TargetTable<R, T> {
     private String idColumnName;
     private String idPropertyName;
     private HashMap<String, String> nameFieldNameMap = new HashMap<>();
+
+
+    public String getOriginName() {
+        return originName;
+    }
+
+    public String getTableAlias() {
+        return tableAlias;
+    }
+
+    public Field[] getDeclaredFields() {
+        return declaredFields;
+    }
+
+    public Class<T> getOriginClass() {
+        return originClass;
+    }
+
+
+
+    public String getIdPropertyName() {
+        return idPropertyName;
+    }
+
+    public HashMap<String, String> getNameFieldNameMap() {
+        return nameFieldNameMap;
+    }
 
     public TargetTable(String originName, String tableAlias, Field[] declaredFields, Class<T> originClass) {
         this.originName = originName;
@@ -58,13 +84,13 @@ public class TargetTable<R, T> {
     }
 
     public String id() {
-        return col(getIdColumnName());
+        return col(idColumnName);
     }
 
     public String col(String column) {
 
         return new StringBuilder()
-                .append(getTableAlias())
+                .append(tableAlias)
                 .append(".")
                 .append(column)
                 .toString()
@@ -95,7 +121,7 @@ public class TargetTable<R, T> {
     public void genratorColumnNameFieldNameMap() {
 
 
-        Field[] declaredFields = this.getDeclaredFields();
+        Field[] declaredFields = this.declaredFields;
 
         for (Field declaredField : declaredFields) {
             Column annotation = declaredField.getAnnotation(Column.class);
