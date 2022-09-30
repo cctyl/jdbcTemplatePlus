@@ -73,6 +73,7 @@ public class SpringTest {
 
                 //role
                 mapOne(mainObj, tRole, AclUser::getRole);
+
             }
         }.genrator(sqlGen.queryForList(namedParameterJdbcTemplate), tUser);
 
