@@ -58,6 +58,10 @@ public class TargetTable<T> {
 
     }
 
+    public String id() {
+        return col(getIdColumnName());
+    }
+
     public String col(String column) {
 
         return new StringBuilder()

@@ -64,35 +64,36 @@ todo: 本质只使用了jpa的Id 注解和 @Column注解，后续会逐步创建
 
 
          */
-        String column = sqlGen.genColumn(tUser,tRoleList,tRole);
+         String column = sqlGen.genColumn(tUser, tRoleList, tRole);
         sqlGen.select(column)
                 .from(tUser)
                 .lJoin(tUserRole)
-                .on(tUser.col(tUser.getIdColumnName()) + "=" + tUserRole.col("user_id"))
+                .on(tUser.id() + "=" + tUserRole.col("user_id"))
 
                 .lJoin(tRoleList)
-                .on(tUserRole.col("role_id") + "=" + tRoleList.col(tRoleList.getIdColumnName()))
+                .on(tUserRole.col("role_id") + "=" + tRoleList.id())
 
                 .lJoin(tRole)
-                .on(tUserRole.col("role_id") + "=" + tRole.col(tRole.getIdColumnName()))
+                .on(tUserRole.col("role_id") + "=" + tRole.id())
 
 
                 .where(tUser.col(tUser.getIdColumnName()) + "=:userId ")
         ;
         sqlGen.addParam("userId", 1);
 
-        List<Map<String, Object>> mapList = sqlGen.queryForList(namedParameterJdbcTemplate);
-        List<AclUser> genrator = new MapToTable<AclUser,String>() {
+        // ===================封装部分==============================
+        List<AclUser> genrator = new MapToTable<AclUser, String>() {
             @Override
             public void mapToChildObj(List<Map<String, Object>> tempList, AclUser mainObj) {
                 //在这里进行子对象封装
-                //roleList 演示对集合的封装
+                //roleList
                 mapMany(mainObj, tRoleList, AclUser::getRoleList);
 
-                //role 演示对单个对象的封装
-                mapOne(mainObj,tRole,AclUser::getRole);
+                //role
+                mapOne(mainObj, tRole, AclUser::getRole);
             }
-        }.genrator(mapList, tUser);
+        }.genrator(sqlGen.queryForList(namedParameterJdbcTemplate), tUser);
+
 
         System.out.println("end");
 

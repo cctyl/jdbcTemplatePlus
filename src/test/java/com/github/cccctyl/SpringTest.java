@@ -32,12 +32,8 @@ public class SpringTest {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 
-
-
-
-
     @Test
-    public void test01LambdaPlus(){
+    public void test01LambdaPlus() {
 
         // =========================参数准备========================
         SqlGenrator sqlGen = new SqlGenrator();
@@ -47,40 +43,25 @@ public class SpringTest {
         TargetTable<String> tUserRole = sqlGen.targetTable(AclUserRole.class);
 
         // ======================查询部分===========================
-        /*
-            目标sql为
-                SELECT
-                  r.*
-                FROM
-                  acl_user u
-                  LEFT JOIN acl_user_role ur
-                    ON u.`id` = ur.`user_id`
-                  LEFT JOIN acl_role r
-                    ON ur.`role_id` = r.id
-                WHERE u.id = 1 ;
-
-
-
-         */
-        String column = sqlGen.genColumn(tUser,tRoleList,tRole);
+        String column = sqlGen.genColumn(tUser, tRoleList, tRole);
         sqlGen.select(column)
                 .from(tUser)
                 .lJoin(tUserRole)
-                .on(tUser.col(tUser.getIdColumnName()) + "=" + tUserRole.col("user_id"))
+                .on(tUser.id() + "=" + tUserRole.col("user_id"))
 
                 .lJoin(tRoleList)
-                .on(tUserRole.col("role_id") + "=" + tRoleList.col(tRoleList.getIdColumnName()))
+                .on(tUserRole.col("role_id") + "=" + tRoleList.id())
 
                 .lJoin(tRole)
-                .on(tUserRole.col("role_id") + "=" + tRole.col(tRole.getIdColumnName()))
+                .on(tUserRole.col("role_id") + "=" + tRole.id())
 
 
                 .where(tUser.col(tUser.getIdColumnName()) + "=:userId ")
         ;
         sqlGen.addParam("userId", 1);
 
-        List<Map<String, Object>> mapList = sqlGen.queryForList(namedParameterJdbcTemplate);
-        List<AclUser> genrator = new MapToTable<AclUser,String>() {
+        // ===================封装部分==============================
+        List<AclUser> genrator = new MapToTable<AclUser, String>() {
             @Override
             public void mapToChildObj(List<Map<String, Object>> tempList, AclUser mainObj) {
                 //在这里进行子对象封装
@@ -88,25 +69,22 @@ public class SpringTest {
                 mapMany(mainObj, tRoleList, AclUser::getRoleList);
 
                 //role
-                mapOne(mainObj,tRole,AclUser::getRole);
+                mapOne(mainObj, tRole, AclUser::getRole);
             }
-        }.genrator(mapList, tUser);
+        }.genrator(sqlGen.queryForList(namedParameterJdbcTemplate), tUser);
 
         System.out.println("end");
 
     }
 
 
-
     @Test
-    public void test02(){
+    public void test02() {
 
         Field field = LambdaUtil.extractColum(AclUser::getId);
         System.out.println(field);
 
     }
-
-
 
 
 }
