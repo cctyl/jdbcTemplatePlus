@@ -1,0 +1,20 @@
+logging:
+  level:
+    ROOT: DEBUG
+    tech.jhipster: INFO
+    org.hibernate.SQL: DEBUG
+    com.hithinksoft.ppkb: DEBUG
+
+spring:
+  jackson:
+    serialization:
+      indent-output: true
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://localhost:3306/ssacl
+    username: root
+    password: root
+    hikari:
+      poolName: Hikari
+      auto-commit: false
+
