@@ -41,10 +41,9 @@ public class SpringTest {
 
         // =========================参数准备========================
         SqlGenrator sqlGen = new SqlGenrator();
-        TargetTable<String> tUser = sqlGen.targetTable(AclUser.class, null);
-
+        TargetTable<String> tUser = sqlGen.targetTable(AclUser.class);
         TargetTable<String> tRole = sqlGen.targetTable(AclUser::getRoleList);
-        TargetTable<String> tUserRole = sqlGen.targetTable(AclUserRole.class, null);
+        TargetTable<String> tUserRole = sqlGen.targetTable(AclUserRole.class);
 
         // ======================查询部分===========================
         /*
@@ -62,13 +61,15 @@ public class SpringTest {
 
 
          */
-        String column = sqlGen.getEntityColumn(tUser) + ",\n" + sqlGen.getEntityColumn(tRole);
+        String column = sqlGen.genColumn(tUser,tRole);
         sqlGen.select(column)
                 .from(tUser)
                 .lJoin(tUserRole)
                 .on(tUser.col(tUser.getIdColumnName()) + "=" + tUserRole.col("user_id"))
+
                 .lJoin(tRole)
                 .on(tUserRole.col("role_id") + "=" + tRole.col(tRole.getIdColumnName()))
+
                 .where(tUser.col(tUser.getIdColumnName()) + "=:userId ")
         ;
         sqlGen.addParam("userId", 1);

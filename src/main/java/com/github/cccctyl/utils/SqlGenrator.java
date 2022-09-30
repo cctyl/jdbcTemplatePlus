@@ -7,10 +7,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
 import java.util.function.Function;
 
 public class SqlGenrator {
@@ -18,7 +17,7 @@ public class SqlGenrator {
 
     private StringBuilder finalSql;
     private HashMap<String, Object> paramMap;
-    private HashMap<String,String> tableMap;
+    private HashMap<String, String> tableMap;
 
     public SqlGenrator() {
         finalSql = new StringBuilder();
@@ -66,7 +65,6 @@ public class SqlGenrator {
     }
 
 
-
     public SqlGenrator rJoin(TargetTable table) {
         finalSql.append("right join ")
                 .append(table.getOriginName())
@@ -91,7 +89,6 @@ public class SqlGenrator {
                 .append(" ");
         return this;
     }
-
 
 
     public SqlGenrator join(TargetTable table) {
@@ -183,51 +180,71 @@ public class SqlGenrator {
         return namedParameterJdbcTemplate.queryForList(this.endSql(), paramMap);
     }
 
-    public List<Map<String, Object>> queryForList(NamedParameterJdbcTemplate namedParameterJdbcTemplate,String sql) {
+    public List<Map<String, Object>> queryForList(NamedParameterJdbcTemplate namedParameterJdbcTemplate, String sql) {
         return namedParameterJdbcTemplate.queryForList(sql, paramMap);
     }
 
-    public  TargetTable targetTable(Class tableClass,String propertyName) {
+    public TargetTable targetTable(Class tableClass) {
+        return targetTable(tableClass, null);
+    }
+
+    public TargetTable targetTable(Class tableClass, String propertyName) {
         String originName = getTableNameFromAnnotation(tableClass);
         String aliasName = getClassFullNameWithOutDot(tableClass);
         Field[] declaredFields = tableClass.getDeclaredFields();
-        if (tableMap.containsKey(aliasName)){
-            aliasName+= propertyName;
+        if (tableMap.containsKey(aliasName)) {
+            aliasName += propertyName;
         }
-        tableMap.put(aliasName,originName);
-        return new TargetTable(originName, aliasName,declaredFields,tableClass);
+        tableMap.put(aliasName, originName);
+        return new TargetTable(originName, aliasName, declaredFields, tableClass);
     }
 
-    public <T> TargetTable targetTable(SFunction<T,?> column) {
+    public <T> TargetTable targetTable(SFunction<T, ?> column) {
 
         SerializedLambda serializedLambda = LambdaUtil.getSerializedLambda(column);
-        Class<T> tableClass = LambdaUtil.getBeanClass(serializedLambda);
         Field field = LambdaUtil.extractColum(serializedLambda);
+
+        Class<?> tableClass = null;
+        if (Collection.class.isAssignableFrom(field.getType())) {
+            // 如果是集合类型，得到其Generic的类型
+            Type genericType = field.getGenericType();
+            if (genericType == null) {
+                throw new RuntimeException("genericType is null");
+            }
+            // 如果是泛型参数的类型
+            if (genericType instanceof ParameterizedType) {
+                ParameterizedType pt = (ParameterizedType) genericType;
+                //得到泛型里的class类型对象
+                tableClass = (Class<?>) pt.getActualTypeArguments()[0];
+
+            }
+        } else {
+            //如果是普通类型
+            tableClass =  field.getType();
+        }
 
         String originName = getTableNameFromAnnotation(tableClass);
         String aliasName = getClassFullNameWithOutDot(tableClass);
         Field[] declaredFields = tableClass.getDeclaredFields();
-        if (tableMap.containsKey(aliasName)){
-            aliasName+= field.getName();
+        if (tableMap.containsKey(aliasName)) {
+            aliasName += field.getName();
         }
-        tableMap.put(aliasName,originName);
-        return new TargetTable(originName, aliasName,declaredFields,tableClass);
+        tableMap.put(aliasName, originName);
+        return new TargetTable(originName, aliasName, declaredFields, tableClass);
     }
 
 
 
-    /**
-     * lambda表达式，根据lambda生成对应的TargetTable
-     * @param column
-     * @param <T>
-     * @return
-     */
-    public <T> TargetTable targetTable(Function<T,?> column) {
 
-        //todo 解析lambda 从而获得 属性的class以及 属性的名称
-
-        throw new RuntimeException();
-
+    public String genColumn(TargetTable... tableList) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < tableList.length; i++) {
+            sb.append(getEntityColumn(tableList[i]));
+            if (i != tableList.length - 1) {
+                sb.append(",\n");
+            }
+        }
+        return sb.toString();
     }
 
     public String getEntityColumn(TargetTable targetTable) {
