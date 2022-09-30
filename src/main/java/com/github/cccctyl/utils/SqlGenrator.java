@@ -117,9 +117,9 @@ public class SqlGenrator {
 
 
     public SqlGenrator where(String condition) {
-        finalSql.append("where ")
+        finalSql.append(" where ")
                 .append(condition)
-                .append("\n");
+                .append(" \n");
         return this;
     }
 
@@ -288,4 +288,12 @@ public class SqlGenrator {
         return substring;
     }
 
+    public SqlGenrator and(String condition) {
+
+        finalSql.append(" and ")
+                .append(condition)
+        .append(" ")
+                ;
+        return this;
+    }
 }

@@ -55,10 +55,13 @@ public class SpringTest {
                 .lJoin(tRole)
                 .on(tUserRole.col("role_id") + "=" + tRole.id())
 
-
-                .where(tUser.col(tUser.getIdColumnName()) + "=:userId ")
+                .where(tUser.id()+ "=:userId")
+                .and(tUser.col("token")+"=:token" )
+                .and(tUser.col("password")+"=:password" )
         ;
         sqlGen.addParam("userId", 1);
+        sqlGen.addParam("token", "sss");
+        sqlGen.addParam("password", "e10adc3949ba59abbe56e057f20f883e");
 
         // ===================封装部分==============================
         List<AclUser> genrator = new MapToTable<AclUser, String>() {
