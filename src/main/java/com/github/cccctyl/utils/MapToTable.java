@@ -78,10 +78,10 @@ public abstract class MapToTable<T,R> {
     }
 
 
-    public void mapOne(T mainObj, TargetTable childTable, String propertyName) {
+    public void mapOne(T mainObj, TargetTable childTable,SFunction<T,?> column) {
         try {
             Class<?> mainObjClass = mainObj.getClass();
-            Field declaredField = mainObjClass.getDeclaredField(propertyName);
+            Field declaredField = LambdaUtil.extractColum(column);
             declaredField.setAccessible(true);
 
 

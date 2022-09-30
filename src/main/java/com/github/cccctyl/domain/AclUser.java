@@ -73,4 +73,7 @@ public class AclUser implements Serializable {
 
 	@Transient
 	private List<AclRole> roleList;
+
+
+
 }

@@ -34,8 +34,8 @@ todo: 本质只使用了jpa的Id 注解和 @Column注解，后续会逐步创建
 那么示例如下：
 
 ```java
-    @Test
-    public void test01(){
+       @Test
+    public void test01LambdaPlus(){
 
         // =========================参数准备========================
         SqlGenrator sqlGen = new SqlGenrator();
@@ -77,13 +77,14 @@ todo: 本质只使用了jpa的Id 注解和 @Column注解，后续会逐步创建
             public void mapToChildObj(List<Map<String, Object>> tempList, AclUser mainObj) {
                 //在这里进行子对象封装
                 //roleList
-                mapMany(mainObj, tRole, "roleList");
+                mapMany(mainObj, tRole, AclUser::getRoleList);
             }
         }.genrator(mapList, tUser);
 
         System.out.println("end");
 
     }
+
 ```
 
 sqlGen 直接直接传入String sql（但是要求表名从targetTable 中取出），也可以通过调用方法拼接的方式。

@@ -43,7 +43,7 @@ public class SpringTest {
         SqlGenrator sqlGen = new SqlGenrator();
         TargetTable<String> tUser = sqlGen.targetTable(AclUser.class, null);
 
-        TargetTable<String> tRole = sqlGen.targetTable(AclRole.class, "roleList");
+        TargetTable<String> tRole = sqlGen.targetTable(AclUser::getRoleList);
         TargetTable<String> tUserRole = sqlGen.targetTable(AclUserRole.class, null);
 
         // ======================查询部分===========================

@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
@@ -196,6 +197,24 @@ public class SqlGenrator {
         tableMap.put(aliasName,originName);
         return new TargetTable(originName, aliasName,declaredFields,tableClass);
     }
+
+    public <T> TargetTable targetTable(SFunction<T,?> column) {
+
+        SerializedLambda serializedLambda = LambdaUtil.getSerializedLambda(column);
+        Class<T> tableClass = LambdaUtil.getBeanClass(serializedLambda);
+        Field field = LambdaUtil.extractColum(serializedLambda);
+
+        String originName = getTableNameFromAnnotation(tableClass);
+        String aliasName = getClassFullNameWithOutDot(tableClass);
+        Field[] declaredFields = tableClass.getDeclaredFields();
+        if (tableMap.containsKey(aliasName)){
+            aliasName+= field.getName();
+        }
+        tableMap.put(aliasName,originName);
+        return new TargetTable(originName, aliasName,declaredFields,tableClass);
+    }
+
+
 
     /**
      * lambda表达式，根据lambda生成对应的TargetTable
