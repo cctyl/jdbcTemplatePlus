@@ -7,6 +7,8 @@ import java.io.Serializable;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
+import java.util.List;
+
 import org.hibernate.annotations.GenericGenerator;
 
 /**
@@ -66,15 +68,9 @@ public class AclUser implements Serializable {
 	@Column(name = "is_deleted", nullable = false)
 	private Boolean isDeleted;
 
-	/**
-	 * 创建时间
-	 */
-	@Column(name = "gmt_create", nullable = false)
-	private LocalDateTime gmtCreate;
 
-	/**
-	 * 更新时间
-	 */
-	@Column(name = "gmt_modified", nullable = false)
-	private LocalDateTime gmtModified;
+
+
+	@Transient
+	private List<AclRole> roleList;
 }

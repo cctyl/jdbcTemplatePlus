@@ -1,7 +1,5 @@
 package com.github.cccctyl.utils;
 
-import cn.hutool.core.util.StrUtil;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
@@ -15,9 +13,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ *
+ * @param <T> 主键类型
+ */
 @Data
 @NoArgsConstructor
-public class TargetTable {
+public class TargetTable<T> {
 
     private String originName;
     private String tableAlias;
@@ -75,10 +77,10 @@ public class TargetTable {
 
     }
 
-    public Map<Long, List<Map<String, Object>>> groupById(List<Map<String, Object>> mapList) {
+    public Map<T, List<Map<String, Object>>> groupById(List<Map<String, Object>> mapList) {
 
         return mapList.stream()
-                .collect(Collectors.groupingBy(map -> (Long) map.get(this.getId(true))
+                .collect(Collectors.groupingBy(map -> (T) map.get(this.getId(true))
                 ));
     }
 

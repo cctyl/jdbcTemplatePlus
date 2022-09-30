@@ -6,14 +6,17 @@ logging:
     com.hithinksoft.ppkb: DEBUG
 
 spring:
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
   jackson:
     serialization:
       indent-output: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://localhost:3306/ssacl
+    url: jdbc:mysql://localhost:3306/ssacl?serverTimezone=GMT%2B8
     username: root
     password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       poolName: Hikari
       auto-commit: false

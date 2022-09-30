@@ -48,15 +48,5 @@ public class AclRolePermission implements Serializable {
 	@Column(name = "is_deleted", nullable = false)
 	private Boolean isDeleted;
 
-	/**
-	 * 创建时间
-	 */
-	@Column(name = "gmt_create", nullable = false)
-	private LocalDateTime gmtCreate;
 
-	/**
-	 * 更新时间
-	 */
-	@Column(name = "gmt_modified", nullable = false)
-	private LocalDateTime gmtModified;
 }

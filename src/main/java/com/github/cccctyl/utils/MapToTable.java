@@ -6,7 +6,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
-public abstract class MapToTable<T> {
+public abstract class MapToTable<T,R> {
 
     private List<Map<String, Object>> mapList = null;
 
@@ -114,18 +114,18 @@ public abstract class MapToTable<T> {
 
 
     public List<T> genrator(List<Map<String, Object>> mapList,
-                            TargetTable mainTable
+                            TargetTable<R> mainTable
     ) {
 
         if (mapList.size()<1){
             return new ArrayList<>();
         }
         this.mapList = mapList;
-        Map<Long, List<Map<String, Object>>> mainTableIdMap = mainTable.groupById(mapList);
+        Map<R, List<Map<String, Object>>> mainTableIdMap = mainTable.groupById(mapList);
 
         ArrayList<T> finalList = new ArrayList<>();
 
-        for (Long idResult : mainTableIdMap.keySet()) {
+        for (R idResult : mainTableIdMap.keySet()) {
             Class originClass = mainTable.getOriginClass();
             T mainObj = null;
             try {

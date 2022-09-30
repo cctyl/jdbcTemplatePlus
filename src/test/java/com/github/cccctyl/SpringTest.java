@@ -1,32 +1,38 @@
-### 简介
+package com.github.cccctyl;
 
-jdbcTemplatePlus，针对jdbcTemplate 进行了封装，用于弥补JPA 等全自动框架灵活性不足的问题。
-todo: 本质只使用了jpa的Id 注解和 @Column注解，后续会逐步创建独立注解，并且支持灵活切换
-### 特点
+import cn.hutool.core.lang.func.Func;
+import com.github.cccctyl.domain.*;
+import com.github.cccctyl.handler.SimpleTypeHandler;
+import com.github.cccctyl.utils.MapToTable;
+import com.github.cccctyl.utils.SFunction;
+import com.github.cccctyl.utils.SqlGenrator;
+import com.github.cccctyl.utils.TargetTable;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-- 针对多表查询嵌套对象的封装，达到类似JPA 的oneToMany、ManyToMany 等注解的作用。
-- 相较于JPA，自定义程度高，灵活性强
+import javax.persistence.*;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest(classes = {Application.class})
+@Slf4j
+public class SpringTest {
+
+
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 
 
-### 框架编写中涉及到的技术问题
-
-- 获得的结果是Integer类型，而实体类的类型是Long。涉及到的类型转换器
-- 枚举值转换枚举对象
-- 成员对象是集合接口类型，但是接口类型不确定的情况下（List，Set，Collection），如何生成对应的实现类？如果是Set接口，应该生成什么实现类？如果是具体的实现类例如HashSet，怎么进行处理？
-- 实体类属性与表中字段的映射，通过注解以及反射的方式
-- 在简化重复步骤的同时，又需要插入定制化的代码，怎么实现？依靠类似函数式接口，抽象方法、回调方法等来实现
-- lambda 表达式来传递需要封装的子对象
-
-### 使用方法
-
-设有 User、Role、UserRole 三张表。其中User表中含有一个成员`List<Role> roleList`，
-
-此时希望查询User时，直接将roleList 封装好。并且不需要过多的代码。
-
-那么示例如下：
-
-```java
     @Test
     public void test01(){
 
@@ -77,9 +83,9 @@ todo: 本质只使用了jpa的Id 注解和 @Column注解，后续会逐步创建
         System.out.println("end");
 
     }
-```
-
-sqlGen 直接直接传入String sql（但是要求表名从targetTable 中取出），也可以通过调用方法拼接的方式。
 
 
 
+
+
+}
