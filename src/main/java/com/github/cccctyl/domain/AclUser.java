@@ -75,5 +75,10 @@ public class AclUser implements Serializable {
 	private List<AclRole> roleList;
 
 
+	/**
+	 * 仅用于演示，无实际功能
+	 */
+	@Transient
+	private AclRole role;
 
 }

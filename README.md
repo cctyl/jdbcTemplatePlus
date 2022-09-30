@@ -9,7 +9,7 @@ todo: 本质只使用了jpa的Id 注解和 @Column注解，后续会逐步创建
 
 
 
-### 框架编写中涉及到的技术问题
+### 涉及到一些问题
 
 - 获得的结果是Integer类型，而实体类的类型是Long。涉及到的类型转换器
 
@@ -25,24 +25,26 @@ todo: 本质只使用了jpa的Id 注解和 @Column注解，后续会逐步创建
 
   此处涉及到的是 lambda表达式中的writeReplace方法
 
+- 通过反射获取集合的泛型
+
 ### 使用方法
 
-设有 User、Role、UserRole 三张表。其中User表中含有一个成员`List<Role> roleList`，
+设有 User、Role、UserRole 三张表。其中User表中含有一个成员`List<Role> roleList`，并且还有一个Role role（无实际意义，仅做演示）。
 
-此时希望查询User时，直接将roleList 封装好。并且不需要过多的代码。
+此时希望查询User时，直接将roleList 封装好，以及Role封装好。并且不需要过多的代码。
 
 那么示例如下：
 
 ```java
-       @Test
+    @Test
     public void test01LambdaPlus(){
 
         // =========================参数准备========================
         SqlGenrator sqlGen = new SqlGenrator();
-        TargetTable<String> tUser = sqlGen.targetTable(AclUser.class, null);
-
-        TargetTable<String> tRole = sqlGen.targetTable(AclRole.class, "roleList");
-        TargetTable<String> tUserRole = sqlGen.targetTable(AclUserRole.class, null);
+        TargetTable<String> tUser = sqlGen.targetTable(AclUser.class);
+        TargetTable<String> tRoleList = sqlGen.targetTable(AclUser::getRoleList);
+        TargetTable<String> tRole = sqlGen.targetTable(AclUser::getRole);
+        TargetTable<String> tUserRole = sqlGen.targetTable(AclUserRole.class);
 
         // ======================查询部分===========================
         /*
@@ -53,20 +55,28 @@ todo: 本质只使用了jpa的Id 注解和 @Column注解，后续会逐步创建
                   acl_user u
                   LEFT JOIN acl_user_role ur
                     ON u.`id` = ur.`user_id`
-                  LEFT JOIN acl_role r
-                    ON ur.`role_id` = r.id
+                  LEFT JOIN acl_role roleList
+                    ON ur.`role_id` = roleList.id
+                  Left join acl_role r
+                  	ON ur.`role_id` = r.id
                 WHERE u.id = 1 ;
 
 
 
          */
-        String column = sqlGen.getEntityColumn(tUser) + ",\n" + sqlGen.getEntityColumn(tRole);
+        String column = sqlGen.genColumn(tUser,tRoleList,tRole);
         sqlGen.select(column)
                 .from(tUser)
                 .lJoin(tUserRole)
                 .on(tUser.col(tUser.getIdColumnName()) + "=" + tUserRole.col("user_id"))
+
+                .lJoin(tRoleList)
+                .on(tUserRole.col("role_id") + "=" + tRoleList.col(tRoleList.getIdColumnName()))
+
                 .lJoin(tRole)
                 .on(tUserRole.col("role_id") + "=" + tRole.col(tRole.getIdColumnName()))
+
+
                 .where(tUser.col(tUser.getIdColumnName()) + "=:userId ")
         ;
         sqlGen.addParam("userId", 1);
@@ -76,14 +86,18 @@ todo: 本质只使用了jpa的Id 注解和 @Column注解，后续会逐步创建
             @Override
             public void mapToChildObj(List<Map<String, Object>> tempList, AclUser mainObj) {
                 //在这里进行子对象封装
-                //roleList
-                mapMany(mainObj, tRole, AclUser::getRoleList);
+                //roleList 演示对集合的封装
+                mapMany(mainObj, tRoleList, AclUser::getRoleList);
+
+                //role 演示对单个对象的封装
+                mapOne(mainObj,tRole,AclUser::getRole);
             }
         }.genrator(mapList, tUser);
 
         System.out.println("end");
 
     }
+
 
 ```
 

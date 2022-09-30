@@ -42,7 +42,8 @@ public class SpringTest {
         // =========================参数准备========================
         SqlGenrator sqlGen = new SqlGenrator();
         TargetTable<String> tUser = sqlGen.targetTable(AclUser.class);
-        TargetTable<String> tRole = sqlGen.targetTable(AclUser::getRoleList);
+        TargetTable<String> tRoleList = sqlGen.targetTable(AclUser::getRoleList);
+        TargetTable<String> tRole = sqlGen.targetTable(AclUser::getRole);
         TargetTable<String> tUserRole = sqlGen.targetTable(AclUserRole.class);
 
         // ======================查询部分===========================
@@ -61,14 +62,18 @@ public class SpringTest {
 
 
          */
-        String column = sqlGen.genColumn(tUser,tRole);
+        String column = sqlGen.genColumn(tUser,tRoleList,tRole);
         sqlGen.select(column)
                 .from(tUser)
                 .lJoin(tUserRole)
                 .on(tUser.col(tUser.getIdColumnName()) + "=" + tUserRole.col("user_id"))
 
+                .lJoin(tRoleList)
+                .on(tUserRole.col("role_id") + "=" + tRoleList.col(tRoleList.getIdColumnName()))
+
                 .lJoin(tRole)
                 .on(tUserRole.col("role_id") + "=" + tRole.col(tRole.getIdColumnName()))
+
 
                 .where(tUser.col(tUser.getIdColumnName()) + "=:userId ")
         ;
@@ -80,7 +85,10 @@ public class SpringTest {
             public void mapToChildObj(List<Map<String, Object>> tempList, AclUser mainObj) {
                 //在这里进行子对象封装
                 //roleList
-                mapMany(mainObj, tRole, AclUser::getRoleList);
+                mapMany(mainObj, tRoleList, AclUser::getRoleList);
+
+                //role
+                mapOne(mainObj,tRole,AclUser::getRole);
             }
         }.genrator(mapList, tUser);
 
