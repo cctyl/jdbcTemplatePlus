@@ -114,7 +114,7 @@ public abstract class MapToTable<T,R> {
 
 
     public List<T> genrator(List<Map<String, Object>> mapList,
-                            TargetTable<R> mainTable
+                            TargetTable<R,T> mainTable
     ) {
 
         if (mapList.size()<1){

@@ -150,7 +150,13 @@ public class SqlGenrator {
         return finalSql.toString();
     }
 
-    public String getClassFullNameWithOutDot(Class clazz) {
+    /**
+     *
+     * @param clazz
+     * @param <T> 实体类类型
+     * @return
+     */
+    public <T> String getClassFullNameWithOutDot(Class<T> clazz) {
 
         String name = clazz.getName();
 
@@ -163,7 +169,13 @@ public class SqlGenrator {
 
     }
 
-    public String getTableNameFromAnnotation(Class table) {
+    /**
+     *
+     * @param table
+     * @param <T> 实体类类型
+     * @return
+     */
+    public <T> String getTableNameFromAnnotation(Class<T> table) {
 
         Table annotation = (Table) table.getAnnotation(Table.class);
         String originalTableName = "";
@@ -184,11 +196,26 @@ public class SqlGenrator {
         return namedParameterJdbcTemplate.queryForList(sql, paramMap);
     }
 
-    public TargetTable targetTable(Class tableClass) {
+    /**
+     *
+     * @param tableClass
+     * @param <R>   实体类的主键类型
+     * @param <T>   实体类类型
+     * @return
+     */
+    public <R, T> TargetTable<R, T> targetTable(Class<T> tableClass) {
         return targetTable(tableClass, null);
     }
 
-    public TargetTable targetTable(Class tableClass, String propertyName) {
+    /**
+     *
+     * @param tableClass
+     * @param propertyName
+     * @param <R>   实体类的主键类型
+     * @param <T>   实体类类型
+     * @return
+     */
+    public <R, T> TargetTable<R, T> targetTable(Class<T> tableClass, String propertyName) {
         String originName = getTableNameFromAnnotation(tableClass);
         String aliasName = getClassFullNameWithOutDot(tableClass);
         Field[] declaredFields = tableClass.getDeclaredFields();
@@ -196,15 +223,22 @@ public class SqlGenrator {
             aliasName += propertyName;
         }
         tableMap.put(aliasName, originName);
-        return new TargetTable(originName, aliasName, declaredFields, tableClass);
+        return new TargetTable<>(originName, aliasName, declaredFields, tableClass);
     }
 
-    public <T> TargetTable targetTable(SFunction<T, ?> column) {
+    /**
+     * @param column
+     * @param <T>    主表类型
+     * @param <R>    子表主键类型
+     * @param <C>    子表类型
+     * @return
+     */
+    public <T, R, C> TargetTable<R, C> targetTable(SFunction<T, ?> column) {
 
         SerializedLambda serializedLambda = LambdaUtil.getSerializedLambda(column);
         Field field = LambdaUtil.extractColum(serializedLambda);
 
-        Class<?> tableClass = null;
+        Class<C> tableClass = null;
         if (Collection.class.isAssignableFrom(field.getType())) {
             // 如果是集合类型，得到其Generic的类型
             Type genericType = field.getGenericType();
@@ -215,14 +249,15 @@ public class SqlGenrator {
             if (genericType instanceof ParameterizedType) {
                 ParameterizedType pt = (ParameterizedType) genericType;
                 //得到泛型里的class类型对象
-                tableClass = (Class<?>) pt.getActualTypeArguments()[0];
+                tableClass = (Class<C>) pt.getActualTypeArguments()[0];
 
             }
         } else {
             //如果是普通类型
-            tableClass =  field.getType();
+            tableClass = (Class<C>) field.getType();
         }
 
+        assert tableClass != null;
         String originName = getTableNameFromAnnotation(tableClass);
         String aliasName = getClassFullNameWithOutDot(tableClass);
         Field[] declaredFields = tableClass.getDeclaredFields();
@@ -230,13 +265,16 @@ public class SqlGenrator {
             aliasName += field.getName();
         }
         tableMap.put(aliasName, originName);
-        return new TargetTable(originName, aliasName, declaredFields, tableClass);
+        return new TargetTable<R, C>(originName, aliasName, declaredFields, tableClass);
     }
 
-
-
-
-    public String genColumn(TargetTable... tableList) {
+    /**
+     *
+     * @param tableList
+     * @return
+     */
+    @SafeVarargs
+    public final String genColumn(TargetTable ... tableList) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < tableList.length; i++) {
             sb.append(getEntityColumn(tableList[i]));
@@ -247,7 +285,14 @@ public class SqlGenrator {
         return sb.toString();
     }
 
-    public String getEntityColumn(TargetTable targetTable) {
+    /**
+     *
+     * @param targetTable
+     * @param <R>   实体类的主键类型
+     * @param <C>   实体类类型
+     * @return
+     */
+    public <R, C> String getEntityColumn(TargetTable<R, C> targetTable) {
         StringBuilder stringBuilder = new StringBuilder();
         Field[] declaredFields = targetTable.getDeclaredFields();
 
@@ -283,17 +328,15 @@ public class SqlGenrator {
         }
 
         String result = stringBuilder.toString();
-        String substring = result.substring(0, result.length() - 2);
-
-        return substring;
+        return result.substring(0, result.length() - 2);
     }
 
     public SqlGenrator and(String condition) {
 
         finalSql.append(" and ")
                 .append(condition)
-        .append(" ")
-                ;
+                .append(" ")
+        ;
         return this;
     }
 }

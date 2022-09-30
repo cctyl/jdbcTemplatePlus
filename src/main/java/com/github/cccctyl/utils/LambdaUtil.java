@@ -78,7 +78,7 @@ public class LambdaUtil {
         return field;
     }
 
-    public static <T> Class<T> getBeanClass(SFunction<T, ?> column){
+    public static <T> Class<T> getBeanClass(SFunction<T, ?> column) {
         SerializedLambda serializedLambda = getSerializedLambda(column);
         Class<?> aClass = null;
         try {
@@ -89,7 +89,7 @@ public class LambdaUtil {
         return (Class<T>) aClass;
     }
 
-    public static <T> Class<T> getBeanClass(  SerializedLambda serializedLambda){
+    public static <T> Class<T> getBeanClass(SerializedLambda serializedLambda) {
         Class<?> aClass = null;
         try {
             aClass = Class.forName(serializedLambda.getImplClass().replace("/", "."));

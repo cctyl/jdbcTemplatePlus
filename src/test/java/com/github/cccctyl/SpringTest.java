@@ -37,10 +37,10 @@ public class SpringTest {
 
         // =========================参数准备========================
         SqlGenrator sqlGen = new SqlGenrator();
-        TargetTable<String> tUser = sqlGen.targetTable(AclUser.class);
-        TargetTable<String> tRoleList = sqlGen.targetTable(AclUser::getRoleList);
-        TargetTable<String> tRole = sqlGen.targetTable(AclUser::getRole);
-        TargetTable<String> tUserRole = sqlGen.targetTable(AclUserRole.class);
+        TargetTable<String,AclUser> tUser = sqlGen.targetTable(AclUser.class);
+        TargetTable<String,AclRole> tRoleList = sqlGen.targetTable(AclUser::getRoleList);
+        TargetTable<String,AclRole> tRole = sqlGen.targetTable(AclUser::getRole);
+        TargetTable<String,AclUserRole> tUserRole = sqlGen.targetTable(AclUserRole.class);
 
         // ======================查询部分===========================
         String column = sqlGen.genColumn(tUser, tRoleList, tRole);
@@ -55,9 +55,9 @@ public class SpringTest {
                 .lJoin(tRole)
                 .on(tUserRole.col("role_id") + "=" + tRole.id())
 
-                .where(tUser.id()+ "=:userId")
-                .and(tUser.col("token")+"=:token" )
-                .and(tUser.col("password")+"=:password" )
+                .where(tUser.id() + "=:userId")
+                .and(tUser.col("token") + "=:token")
+                .and(tUser.col("password") + "=:password")
         ;
         sqlGen.addParam("userId", 1);
         sqlGen.addParam("token", "sss");
@@ -77,7 +77,6 @@ public class SpringTest {
         }.genrator(sqlGen.queryForList(namedParameterJdbcTemplate), tUser);
 
         System.out.println("end");
-
     }
 
 

@@ -14,22 +14,21 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- *
- * @param <T> 主键类型
+ * @param <R> 主键类型
  */
 @Data
 @NoArgsConstructor
-public class TargetTable<T> {
+public class TargetTable<R, T> {
 
     private String originName;
     private String tableAlias;
     private Field[] declaredFields;
-    private Class originClass;
+    private Class<T> originClass;
     private String idColumnName;
     private String idPropertyName;
     private HashMap<String, String> nameFieldNameMap = new HashMap<>();
 
-    public TargetTable(String originName, String tableAlias, Field[] declaredFields, Class originClass) {
+    public TargetTable(String originName, String tableAlias, Field[] declaredFields, Class<T> originClass) {
         this.originName = originName;
         this.tableAlias = tableAlias;
         this.declaredFields = declaredFields;
@@ -81,10 +80,9 @@ public class TargetTable<T> {
 
     }
 
-    public Map<T, List<Map<String, Object>>> groupById(List<Map<String, Object>> mapList) {
-
+    public Map<R, List<Map<String, Object>>> groupById(List<Map<String, Object>> mapList) {
         return mapList.stream()
-                .collect(Collectors.groupingBy(map -> (T) map.get(this.getId(true))
+                .collect(Collectors.groupingBy(map -> (R) map.get(this.getId(true))
                 ));
     }
 
