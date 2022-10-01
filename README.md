@@ -6,6 +6,7 @@ todo: 本质只使用了jpa的Id 注解和 @Column注解，后续会逐步创建
 
 - 针对多表查询嵌套对象的封装，达到类似JPA 的oneToMany、ManyToMany 等注解的作用。
 - 相较于JPA，自定义程度高，灵活性强
+- 无侵入，耦合低，仅为了兼容以往jpa项目，使用jpaTable\Id\Column 注解。jdbcTemplate为外部传入
 
 
 
@@ -26,6 +27,28 @@ todo: 本质只使用了jpa的Id 注解和 @Column注解，后续会逐步创建
   此处涉及到的是 lambda表达式中的writeReplace方法
 
 - 通过反射获取集合的泛型
+
+
+
+### 引入方式
+
+- 本地lib包方式
+
+  在src旁创建libs目录。然后在maven中添加
+
+  ```xml
+          <dependency>
+              <groupId>com.github.cccctyl</groupId>
+              <artifactId>jdbcTemplatePlus</artifactId>
+              <version>1.0-SNAPSHOT</version>
+              <scope>system</scope>
+              <systemPath>${basedir}/libs/jdbcTemplatePlus-1.0-SNAPSHOT.jar</systemPath>
+          </dependency>
+  ```
+
+- maven依赖
+
+  待上传
 
 ### 使用方法
 

@@ -1,4 +1,4 @@
-package com.github.cccctyl;
+package com.github.cctyl;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

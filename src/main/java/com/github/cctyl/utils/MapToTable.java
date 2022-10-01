@@ -1,6 +1,6 @@
-package com.github.cccctyl.utils;
+package com.github.cctyl.utils;
 
-import com.github.cccctyl.handler.SimpleTypeHandler;
+import com.github.cctyl.handler.SimpleTypeHandler;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

@@ -1,8 +1,14 @@
-package com.github.cccctyl.test;
+package com.github.cctyl.test;
 
-import com.github.cccctyl.Application;
-import com.github.cccctyl.domain.*;
-import com.github.cccctyl.utils.*;
+
+import com.github.cctyl.SqlGenrator;
+import com.github.cctyl.utils.LambdaUtil;
+import com.github.cctyl.utils.MapToTable;
+import com.github.cctyl.utils.TargetTable;
+import com.github.cctyl.Application;
+import com.github.cctyl.domain.AclRole;
+import com.github.cctyl.domain.AclUser;
+import com.github.cctyl.domain.AclUserRole;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +18,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)

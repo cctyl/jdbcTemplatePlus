@@ -1,12 +1,12 @@
-package com.github.cccctyl.domain;
+package com.github.cctyl.domain;
 
-import lombok.Data;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.io.Serializable;
-import javax.persistence.*;
-
 import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * @Description
@@ -17,11 +17,11 @@ import org.hibernate.annotations.GenericGenerator;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "acl_role_permission")
-public class AclRolePermission implements Serializable {
+@Table(name = "acl_role")
+public class AclRole implements Serializable {
 
 	/**
-	 * null
+	 * 角色id
 	 */
 	@Id
 	@GeneratedValue(generator="system-uuid")
@@ -30,16 +30,22 @@ public class AclRolePermission implements Serializable {
 	private String id;
 
 	/**
-	 * null
+	 * 角色名称
 	 */
-	@Column(name = "role_id", nullable = false)
-	private String roleId;
+	@Column(name = "role_name", nullable = false)
+	private String roleName;
 
 	/**
-	 * null
+	 * 角色编码
 	 */
-	@Column(name = "permission_id", nullable = false)
-	private String permissionId;
+	@Column(name = "role_code", nullable = true)
+	private String roleCode;
+
+	/**
+	 * 备注
+	 */
+	@Column(name = "remark", nullable = true)
+	private String remark;
 
 	/**
 	 * 逻辑删除 1（true）已删除， 0（false）未删除

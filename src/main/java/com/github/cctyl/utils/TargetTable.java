@@ -1,4 +1,4 @@
-package com.github.cccctyl.utils;
+package com.github.cctyl.utils;
 
 import org.springframework.util.StringUtils;
 

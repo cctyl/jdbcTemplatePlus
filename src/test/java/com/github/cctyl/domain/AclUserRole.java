@@ -1,12 +1,12 @@
-package com.github.cccctyl.domain;
+package com.github.cctyl.domain;
 
-import lombok.Data;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.io.Serializable;
-import javax.persistence.*;
-
 import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * @Description

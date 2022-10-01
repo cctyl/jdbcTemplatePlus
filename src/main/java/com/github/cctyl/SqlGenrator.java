@@ -1,5 +1,8 @@
-package com.github.cccctyl.utils;
+package com.github.cctyl;
 
+import com.github.cctyl.utils.LambdaUtil;
+import com.github.cctyl.utils.SFunction;
+import com.github.cctyl.utils.TargetTable;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.persistence.Column;

@@ -1,4 +1,4 @@
-package com.github.cccctyl.utils;
+package com.github.cctyl.utils;
 
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
