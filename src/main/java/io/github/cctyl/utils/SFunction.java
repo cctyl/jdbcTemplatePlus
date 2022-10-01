@@ -1,4 +1,4 @@
-package com.github.cctyl.utils;
+package io.github.cctyl.utils;
 
 import java.io.Serializable;
 import java.util.function.Function;

@@ -1,10 +1,10 @@
 package com.github.cctyl.test;
 
 
-import com.github.cctyl.SqlGenrator;
-import com.github.cctyl.utils.LambdaUtil;
-import com.github.cctyl.utils.MapToTable;
-import com.github.cctyl.utils.TargetTable;
+import io.github.cctyl.SqlGenrator;
+import io.github.cctyl.utils.LambdaUtil;
+import io.github.cctyl.utils.MapToTable;
+import io.github.cctyl.utils.TargetTable;
 import com.github.cctyl.Application;
 import com.github.cctyl.domain.AclRole;
 import com.github.cctyl.domain.AclUser;
