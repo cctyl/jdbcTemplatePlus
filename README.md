@@ -32,23 +32,16 @@ todo: 本质只使用了jpa的Id 注解和 @Column注解，后续会逐步创建
 
 ### 引入方式
 
-- 本地lib包方式
-
-  在src旁创建libs目录。然后在maven中添加
-
-  ```xml
-          <dependency>
-              <groupId>com.github.cccctyl</groupId>
-              <artifactId>jdbcTemplatePlus</artifactId>
-              <version>1.0-SNAPSHOT</version>
-              <scope>system</scope>
-              <systemPath>${basedir}/libs/jdbcTemplatePlus-1.0-SNAPSHOT.jar</systemPath>
-          </dependency>
-  ```
 
 - maven依赖
 
-  待上传
+  ```xml
+        <dependency>
+            <groupId>io.github.cctyl</groupId>
+            <artifactId>jdbcTemplatePlus</artifactId>
+            <version>1.0</version>
+        </dependency>
+    ```
 
 ### 使用方法
 
