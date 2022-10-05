@@ -94,6 +94,7 @@ public class TargetTable<R, T> {
                 .append(tableAlias)
                 .append(".")
                 .append(column)
+                .append(" ")
                 .toString()
                 ;
     }
