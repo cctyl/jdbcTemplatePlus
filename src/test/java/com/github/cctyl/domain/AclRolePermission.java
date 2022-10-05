@@ -3,7 +3,7 @@ package com.github.cctyl.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
+
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -25,7 +25,7 @@ public class AclRolePermission implements Serializable {
 	 */
 	@Id
 	@GeneratedValue(generator="system-uuid")
-	@GenericGenerator(name="system-uuid", strategy = "uuid")
+
 	@Column(name = "id", nullable = false)
 	private String id;
 
