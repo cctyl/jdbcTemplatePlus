@@ -21,6 +21,11 @@ public class SqlGenrator {
     private HashMap<String, Object> paramMap;
     private HashMap<String, String> tableMap;
 
+
+    public HashMap<String, Object> getParamMap() {
+        return paramMap;
+    }
+
     public SqlGenrator() {
         finalSql = new StringBuilder();
         paramMap = new HashMap<>();

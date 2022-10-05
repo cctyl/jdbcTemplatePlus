@@ -58,15 +58,15 @@ public class SpringTest {
                 .on(tUser.id() + "=" + tUserRole.col("user_id"))
 
                 .lJoin(tRoleList)
-                .on(tUserRole.col("role_id") + "=" + tRoleList.id())
+                .on(tUserRole.col(AclUserRole::getRoleId) + "=" + tRoleList.id())
 
                 .lJoin(tRole)
-                .on(tUserRole.col("role_id") + "=" + tRole.id())
+                .on(tUserRole.col(AclUserRole::getRoleId) + "=" + tRole.id())
 
                 .where(tUser.id() + "=:userId")
-                .and(tUser.col("token") + "=:token")
-                .and(tUser.col("password") + "=:password")
-                .or(tUser.col("password") + "=:password")
+                .and(tUser.col(AclUser::getToken) + "=:token")
+                .and(tUser.col(AclUser::getPassword) + "=:password")
+                .or(tUser.col(AclUser::getPassword) + "=:password")
         ;
         sqlGen.addParam("userId", 1);
         sqlGen.addParam("token", "sss");

@@ -99,6 +99,17 @@ public class TargetTable<R, T> {
                 ;
     }
 
+    public String col(SFunction<T,?> column) {
+
+        return new StringBuilder()
+                .append(tableAlias)
+                .append(".")
+                .append(ColumnUtil.getTableFieldName(column))
+                .append(" ")
+                .toString()
+                ;
+    }
+
     public String getId(boolean alias) {
         if (alias) {
             return this.tableAlias + this.idColumnName;
