@@ -4,6 +4,7 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
@@ -134,6 +135,9 @@ public class TargetTable<R, T> {
      */
     public void genratorColumnNameFieldNameMap() {
 
+        //父类字段加入map
+        genratorParentColumnNameFieldNameMap(this.originClass.getSuperclass());
+
 
         Field[] declaredFields = this.declaredFields;
 
@@ -165,6 +169,46 @@ public class TargetTable<R, T> {
                 }
             }
         }
+
+    }
+
+    private void genratorParentColumnNameFieldNameMap(Class<? super T> superclass) {
+        MappedSuperclass mappedSuperclassAnno = superclass.getAnnotation(MappedSuperclass.class);
+        if (mappedSuperclassAnno!=null){
+            genratorParentColumnNameFieldNameMap(superclass.getSuperclass());
+            Field[] declaredFields = superclass.getDeclaredFields();
+            for (Field declaredField : declaredFields) {
+                Transient transientAnno = declaredField.getAnnotation(Transient.class);
+                if (transientAnno!=null){
+                    continue;
+                }
+                Column annotation = declaredField.getAnnotation(Column.class);
+                Id idAnnotation = declaredField.getAnnotation(Id.class);
+                if (annotation != null) {
+                    //说明该字段上添加了注解
+                    //直接获取注解上的值
+
+                    //获取该字段对应的表中列名
+                    String tableColunmName = this.tableAlias + annotation.name();
+
+                    if (tableColunmName.length() > 0) {
+                        //获取该字段的名字
+                        String fieldName = declaredField.getName();
+                        nameFieldNameMap.put(tableColunmName, fieldName);
+                    }
+                } else if (idAnnotation != null) {
+                    String tableColunmName = this.tableAlias + declaredField.getName();
+                    if (tableColunmName.length() > 0) {
+                        //获取该字段的名字
+                        String fieldName = declaredField.getName();
+                        nameFieldNameMap.put(tableColunmName, fieldName);
+                    }
+                }
+            }
+        }
+
+
+
     }
 
 
