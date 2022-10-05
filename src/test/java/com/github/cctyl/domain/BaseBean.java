@@ -6,15 +6,25 @@ import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
-//@MappedSuperclass
+@MappedSuperclass
 @Data
-public class BaseBean extends  TopBean {
+public class BaseBean  {
 
+    /**
+     * 微信openid
+     */
+    @Column(name = "username", nullable = false)
+    private String username;
 
-    @Column(name = "test_name")
-    private String testName;
+    /**
+     * 密码
+     */
+    @Column(name = "password", nullable = false)
+    private String password;
 
-    @Transient
-    private String testProperty;
-
+    /**
+     * 昵称
+     */
+    @Column(name = "nick_name", nullable = true)
+    private String nickName;
 }

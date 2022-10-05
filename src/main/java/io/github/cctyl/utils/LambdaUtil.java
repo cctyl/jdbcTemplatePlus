@@ -1,5 +1,7 @@
 package io.github.cctyl.utils;
 
+import org.springframework.util.ReflectionUtils;
+
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -40,8 +42,8 @@ public class LambdaUtil {
         //开始找到对应的字段
         Field field;
         try {
-            field = Class.forName(serializedLambda.getImplClass().replace("/", ".")).getDeclaredField(fieldName);
-        } catch (ClassNotFoundException | NoSuchFieldException e) {
+            field = ReflectionUtils.findField(Class.forName(serializedLambda.getImplClass().replace("/", ".")),fieldName);
+        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
         return field;
@@ -71,8 +73,12 @@ public class LambdaUtil {
         //开始找到对应的字段
         Field field;
         try {
-            field = Class.forName(serializedLambda.getImplClass().replace("/", ".")).getDeclaredField(fieldName);
-        } catch (ClassNotFoundException | NoSuchFieldException e) {
+
+            field =ReflectionUtils.findField(Class.forName(serializedLambda.getImplClass().replace("/", ".")),fieldName);
+
+            ReflectionUtils.makeAccessible(field);
+
+        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
         return field;

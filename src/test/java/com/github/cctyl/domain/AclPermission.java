@@ -26,7 +26,6 @@ public class AclPermission implements Serializable {
 	 */
 	@Id
 	@GeneratedValue(generator="system-uuid")
-
 	@Column(name = "id", nullable = false)
 	private String id;
 

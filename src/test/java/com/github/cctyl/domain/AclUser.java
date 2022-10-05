@@ -26,27 +26,10 @@ public class AclUser extends BaseBean implements Serializable {
 	 */
 	@Id
 	@GeneratedValue(generator="system-uuid")
-
 	@Column(name = "id", nullable = false)
 	private String id;
 
-	/**
-	 * 微信openid
-	 */
-	@Column(name = "username", nullable = false)
-	private String username;
 
-	/**
-	 * 密码
-	 */
-	@Column(name = "password", nullable = false)
-	private String password;
-
-	/**
-	 * 昵称
-	 */
-	@Column(name = "nick_name", nullable = true)
-	private String nickName;
 
 	/**
 	 * 用户头像

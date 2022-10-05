@@ -1,20 +1,21 @@
 package io.github.cctyl.utils;
 
 import io.github.cctyl.handler.SimpleTypeHandler;
+import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
 
-public abstract class MapToTable<T,R> {
+public abstract class MapToTable<T, R> {
 
     private List<Map<String, Object>> mapList = null;
 
-    public void mapMany(T mainObj, TargetTable childTable, SFunction<T,?> column) {
+    public void mapMany(T mainObj, TargetTable childTable, SFunction<T, ?> column) {
         try {
             Class<?> mainObjClass = mainObj.getClass();
             Field declaredField = LambdaUtil.extractColum(column);
-            declaredField.setAccessible(true);
+            ReflectionUtils.makeAccessible(declaredField);
 
             Class<?> collectionType = declaredField.getType();
 
@@ -61,15 +62,16 @@ public abstract class MapToTable<T,R> {
                 MapToTable.columnMapToObj(stringObjectMap, child, childTable);
 
 
-                Field idField = childOriginClass.getDeclaredField(childTable.getIdPropertyName());
-                idField.setAccessible(true);
+                Field idField = ReflectionUtils.findField(childOriginClass, childTable.getIdPropertyName());
+
+                ReflectionUtils.makeAccessible(idField);
+
+
                 if (idField.get(child) != null) {
                     deduplicationSet.add(child);
                 }
             }
             childCollection.addAll(deduplicationSet);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
@@ -78,12 +80,10 @@ public abstract class MapToTable<T,R> {
     }
 
 
-    public void mapOne(T mainObj, TargetTable childTable,SFunction<T,?> column) {
+    public void mapOne(T mainObj, TargetTable childTable, SFunction<T, ?> column) {
         try {
-            Class<?> mainObjClass = mainObj.getClass();
             Field declaredField = LambdaUtil.extractColum(column);
-            declaredField.setAccessible(true);
-
+            ReflectionUtils.makeAccessible(declaredField);
 
             Class childOriginClass = childTable.getOriginClass();
             Object childObject = null;
@@ -94,8 +94,10 @@ public abstract class MapToTable<T,R> {
 
                 MapToTable.columnMapToObj(stringObjectMapForParent, childObject, childTable);
 
-                Field idField = childOriginClass.getDeclaredField(childTable.getIdPropertyName());
-                idField.setAccessible(true);
+                Field idField = ReflectionUtils.findField(childOriginClass, childTable.getIdPropertyName());
+
+                ReflectionUtils.makeAccessible(idField);
+
 
                 if (idField.get(childObject) != null) {
                     declaredField.set(mainObj, childObject);
@@ -103,8 +105,6 @@ public abstract class MapToTable<T,R> {
             }
 
 
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
@@ -114,10 +114,10 @@ public abstract class MapToTable<T,R> {
 
 
     public List<T> genrator(List<Map<String, Object>> mapList,
-                            TargetTable<R,T> mainTable
+                            TargetTable<R, T> mainTable
     ) {
 
-        if (mapList.size()<1){
+        if (mapList.size() < 1) {
             return new ArrayList<>();
         }
         this.mapList = mapList;
@@ -164,9 +164,9 @@ public abstract class MapToTable<T,R> {
 
             Field declaredField;
             try {
-                declaredField = targetClass.getDeclaredField(fieldName);
-                declaredField.setAccessible(true);
 
+                declaredField = ReflectionUtils.findField(targetClass, fieldName);
+                ReflectionUtils.makeAccessible(declaredField);
                 Object realValue = valueMap.get(tableColumnName);
 
                 //目标字段类型
@@ -174,7 +174,7 @@ public abstract class MapToTable<T,R> {
                 realValue = SimpleTypeHandler.convert(realValue, targetFieldType);
 
                 declaredField.set(tagetObj, realValue);
-            } catch (NoSuchFieldException | IllegalAccessException e) {
+            } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
