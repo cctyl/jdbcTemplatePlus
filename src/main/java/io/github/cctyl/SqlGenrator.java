@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
@@ -339,8 +340,62 @@ public class SqlGenrator {
             }
         }
 
+        //递归向上查找父级
+        String parentColumns = getParentColumn(targetTable.getOriginClass().getSuperclass(),
+                classFullNameWithOutDot);
+
+        stringBuilder.append(parentColumns);
         String result = stringBuilder.toString();
         return result.substring(0, result.length() - 2);
+    }
+
+    private <C> String getParentColumn(Class<? super C> superclass, String classFullNameWithOutDot) {
+        StringBuilder stringBuilder = new StringBuilder();
+        MappedSuperclass annotation = superclass.getAnnotation(MappedSuperclass.class);
+        if (annotation!=null){
+            //向上找父类
+            stringBuilder.append(getParentColumn(  superclass.getSuperclass(), classFullNameWithOutDot));
+            //找自身字段
+            Field[] declaredFields = superclass.getDeclaredFields();
+
+
+            for (Field declaredField : declaredFields) {
+                Column columnAnnotation = declaredField.getAnnotation(Column.class);
+                Id idAnnotation = declaredField.getAnnotation(Id.class);
+                if (annotation != null) {
+
+                    String tableColunmAlias = classFullNameWithOutDot + columnAnnotation.name();
+
+                    stringBuilder
+                            .append(classFullNameWithOutDot)
+                            .append('.')
+                            .append(columnAnnotation.name())
+                            .append(" ")
+                            .append(tableColunmAlias)
+                            .append(',')
+                            .append("\n");
+
+                } else if (idAnnotation != null) {
+                    String tableColunmAlias = classFullNameWithOutDot + declaredField.getName();
+                    stringBuilder
+                            .append(classFullNameWithOutDot)
+                            .append('.')
+                            .append(declaredField.getName())
+                            .append(" ")
+                            .append(tableColunmAlias)
+                            .append(',')
+                            .append("\n");
+                }
+            }
+
+
+            return stringBuilder.toString();
+        }else {
+            //没有注解则直接跳过
+            return "";
+        }
+
+
     }
 
     public SqlGenrator and(String condition) {

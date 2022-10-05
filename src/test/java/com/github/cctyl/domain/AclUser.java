@@ -19,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "acl_user")
-public class AclUser implements Serializable {
+public class AclUser extends BaseBean implements Serializable {
 
 	/**
 	 * 会员id
