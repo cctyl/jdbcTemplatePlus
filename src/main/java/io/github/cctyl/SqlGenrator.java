@@ -5,10 +5,7 @@ import io.github.cctyl.utils.SFunction;
 import io.github.cctyl.utils.TargetTable;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -312,6 +309,10 @@ public class SqlGenrator {
         String classFullNameWithOutDot = targetTable.getTableAlias();
 
         for (Field declaredField : declaredFields) {
+            Transient transientAnno = declaredField.getAnnotation(Transient.class);
+            if (transientAnno!=null){
+                continue;
+            }
             Column annotation = declaredField.getAnnotation(Column.class);
             Id idAnnotation = declaredField.getAnnotation(Id.class);
             if (annotation != null) {
@@ -351,8 +352,8 @@ public class SqlGenrator {
 
     private <C> String getParentColumn(Class<? super C> superclass, String classFullNameWithOutDot) {
         StringBuilder stringBuilder = new StringBuilder();
-        MappedSuperclass annotation = superclass.getAnnotation(MappedSuperclass.class);
-        if (annotation!=null){
+        MappedSuperclass mappedSuperclassAnno = superclass.getAnnotation(MappedSuperclass.class);
+        if (mappedSuperclassAnno!=null){
             //向上找父类
             stringBuilder.append(getParentColumn(  superclass.getSuperclass(), classFullNameWithOutDot));
             //找自身字段
@@ -360,9 +361,13 @@ public class SqlGenrator {
 
 
             for (Field declaredField : declaredFields) {
+                Transient transientAnno = declaredField.getAnnotation(Transient.class);
+                if (transientAnno!=null){
+                    continue;
+                }
                 Column columnAnnotation = declaredField.getAnnotation(Column.class);
                 Id idAnnotation = declaredField.getAnnotation(Id.class);
-                if (annotation != null) {
+                if (columnAnnotation != null) {
 
                     String tableColunmAlias = classFullNameWithOutDot + columnAnnotation.name();
 

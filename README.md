@@ -7,7 +7,7 @@ todo: 本质只使用了jpa的Id 注解和 @Column注解，后续会逐步创建
 - 针对多表查询嵌套对象的封装，达到类似JPA 的oneToMany、ManyToMany 等注解的作用。
 - 相较于JPA，自定义程度高，灵活性强
 - 无侵入，耦合低，仅为了兼容以往jpa项目，使用jpaTable\Id\Column 注解。jdbcTemplate为外部传入
-
+- 支持注解：@MappedSuperclass、@Transient
 
 
 ### 涉及到一些问题

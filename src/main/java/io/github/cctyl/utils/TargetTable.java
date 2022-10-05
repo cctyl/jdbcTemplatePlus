@@ -4,6 +4,7 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -137,6 +138,10 @@ public class TargetTable<R, T> {
         Field[] declaredFields = this.declaredFields;
 
         for (Field declaredField : declaredFields) {
+            Transient transientAnno = declaredField.getAnnotation(Transient.class);
+            if (transientAnno!=null){
+                continue;
+            }
             Column annotation = declaredField.getAnnotation(Column.class);
             Id idAnnotation = declaredField.getAnnotation(Id.class);
             if (annotation != null) {
