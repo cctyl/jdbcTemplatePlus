@@ -4,7 +4,11 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +16,7 @@ import java.util.stream.Collectors;
 
 /**
  * @param <R> 主键类型
+ * @param <T> 对应实体类类型
  */
 
 public class TargetTable<R, T> {
@@ -40,7 +45,6 @@ public class TargetTable<R, T> {
     public Class<T> getOriginClass() {
         return originClass;
     }
-
 
 
     public String getIdPropertyName() {
@@ -147,4 +151,46 @@ public class TargetTable<R, T> {
     }
 
 
+    public String columns(SFunction<T, ?>... columns) {
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < columns.length; i++) {
+
+            SFunction<T, ?> column = columns[i];
+            SerializedLambda serializedLambda = LambdaUtil.getSerializedLambda(column);
+            Field field = LambdaUtil.extractColum(serializedLambda);
+
+            String classFullNameWithOutDot = this.getTableAlias();
+            Column annotation = field.getAnnotation(Column.class);
+            Id idAnnotation = field.getAnnotation(Id.class);
+            if (annotation != null) {
+
+                String tableColunmAlias = classFullNameWithOutDot + annotation.name();
+
+                sb
+                        .append(classFullNameWithOutDot)
+                        .append('.')
+                        .append(annotation.name())
+                        .append(" ")
+                        .append(tableColunmAlias)
+                        .append(',')
+                        .append("\n");
+
+            } else if (idAnnotation != null) {
+                String tableColunmAlias = classFullNameWithOutDot + field.getName();
+                sb
+                        .append(classFullNameWithOutDot)
+                        .append('.')
+                        .append(field.getName())
+                        .append(" ")
+                        .append(tableColunmAlias)
+                        .append(',')
+                        .append("\n");
+            }
+        }
+
+        String result = sb.toString();
+        return result.substring(0, result.length() - 2);
+
+    }
 }

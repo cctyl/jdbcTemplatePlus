@@ -43,7 +43,15 @@ public class SpringTest {
         TargetTable<String, AclUserRole> tUserRole = sqlGen.targetTable(AclUserRole.class);
 
         // ======================查询部分===========================
-        String column = sqlGen.genColumn(tUser, tRoleList, tRole);
+        //如果你只需要一部分字段，则显式的声明这部分字段
+        String column = sqlGen.genColumn(tUser.columns(AclUser::getId,AclUser::getUsername),
+                tRoleList.columns(AclRole::getRoleName,AclRole::getId),
+                tRole.columns(AclRole::getRoleName));
+
+        //如果你需要全部字段
+//        String column = sqlGen.genColumn(tUser, tRoleList, tRole);
+
+
         sqlGen.select(column)
                 .from(tUser)
                 .lJoin(tUserRole)

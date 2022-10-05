@@ -153,9 +153,8 @@ public class SqlGenrator {
     }
 
     /**
-     *
      * @param clazz
-     * @param <T> 实体类类型
+     * @param <T>   实体类类型
      * @return
      */
     public <T> String getClassFullNameWithOutDot(Class<T> clazz) {
@@ -172,9 +171,8 @@ public class SqlGenrator {
     }
 
     /**
-     *
      * @param table
-     * @param <T> 实体类类型
+     * @param <T>   实体类类型
      * @return
      */
     public <T> String getTableNameFromAnnotation(Class<T> table) {
@@ -199,10 +197,9 @@ public class SqlGenrator {
     }
 
     /**
-     *
      * @param tableClass
-     * @param <R>   实体类的主键类型
-     * @param <T>   实体类类型
+     * @param <R>        实体类的主键类型
+     * @param <T>        实体类类型
      * @return
      */
     public <R, T> TargetTable<R, T> targetTable(Class<T> tableClass) {
@@ -210,11 +207,10 @@ public class SqlGenrator {
     }
 
     /**
-     *
      * @param tableClass
      * @param propertyName
-     * @param <R>   实体类的主键类型
-     * @param <T>   实体类类型
+     * @param <R>          实体类的主键类型
+     * @param <T>          实体类类型
      * @return
      */
     public <R, T> TargetTable<R, T> targetTable(Class<T> tableClass, String propertyName) {
@@ -271,12 +267,11 @@ public class SqlGenrator {
     }
 
     /**
-     *
      * @param tableList
      * @return
      */
     @SafeVarargs
-    public final String genColumn(TargetTable ... tableList) {
+    public final String genColumn(TargetTable... tableList) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < tableList.length; i++) {
             sb.append(getEntityColumn(tableList[i]));
@@ -287,11 +282,21 @@ public class SqlGenrator {
         return sb.toString();
     }
 
+    public final String genColumn(String... columnList) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < columnList.length; i++) {
+            sb.append(columnList[i])
+                    .append(",\n");
+        }
+        String result = sb.toString();
+        return result.substring(0, result.length() - 2);
+    }
+
+
     /**
-     *
      * @param targetTable
-     * @param <R>   实体类的主键类型
-     * @param <C>   实体类类型
+     * @param <R>         实体类的主键类型
+     * @param <C>         实体类类型
      * @return
      */
     public <R, C> String getEntityColumn(TargetTable<R, C> targetTable) {
