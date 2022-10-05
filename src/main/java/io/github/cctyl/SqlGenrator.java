@@ -341,4 +341,12 @@ public class SqlGenrator {
         ;
         return this;
     }
+
+    public SqlGenrator or(String condition) {
+        finalSql.append(" or ")
+                .append(condition)
+                .append(" ")
+        ;
+        return this;
+    }
 }

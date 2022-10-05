@@ -58,6 +58,7 @@ public class SpringTest {
                 .where(tUser.id() + "=:userId")
                 .and(tUser.col("token") + "=:token")
                 .and(tUser.col("password") + "=:password")
+                .or(tUser.col("password") + "=:password")
         ;
         sqlGen.addParam("userId", 1);
         sqlGen.addParam("token", "sss");
