@@ -34,7 +34,7 @@
 
     <groupId>io.github.cctyl</groupId>
     <artifactId>jdbcTemplatePlus</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <name>jdbcTemplatePlus</name>
     <description>jdbcTemplate is packaged to compensate for the lack of flexibility in fully automated frameworks such as JPA</description>
     <properties>

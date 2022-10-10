@@ -39,7 +39,7 @@ todo: 本质只使用了jpa的Id 注解和 @Column注解，后续会逐步创建
         <dependency>
             <groupId>io.github.cctyl</groupId>
             <artifactId>jdbcTemplatePlus</artifactId>
-            <version>1.0</version>
+            <version>1.0.3</version>
         </dependency>
   ```
 
