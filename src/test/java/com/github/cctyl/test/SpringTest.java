@@ -68,10 +68,9 @@ public class SpringTest {
                 .and(tUser.col(AclUser::getToken) + "=:token")
                 .and(tUser.col(AclUser::getPassword) + "=:password")
                 .or(tUser.col(AclUser::getPassword) + "=:password")
-        ;
-        sqlGen.addParam("userId", 1);
-        sqlGen.addParam("token", "sss");
-        sqlGen.addParam("password", "e10adc3949ba59abbe56e057f20f883e");
+                .addParam("userId", 1)
+                .addParam("token", "sss")
+                .addParam("password", "e10adc3949ba59abbe56e057f20f883e");
 
         // ===================封装部分==============================
         List<AclUser> genrator = new MapToTable<AclUser, String>() {

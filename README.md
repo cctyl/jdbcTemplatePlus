@@ -89,24 +89,23 @@ todo: 本质只使用了jpa的Id 注解和 @Column注解，后续会逐步创建
     
     
             sqlGen.select(column)
-                    .from(tUser)
-                    .lJoin(tUserRole)
-                    .on(tUser.id() + "=" + tUserRole.col("user_id"))
-    
-                    .lJoin(tRoleList)
-                    .on(tUserRole.col(AclUserRole::getRoleId) + "=" + tRoleList.id())
-    
-                    .lJoin(tRole)
-                    .on(tUserRole.col(AclUserRole::getRoleId) + "=" + tRole.id())
-    
-                    .where(tUser.id() + "=:userId")
-                    .and(tUser.col(AclUser::getToken) + "=:token")
-                    .and(tUser.col(AclUser::getPassword) + "=:password")
-                    .or(tUser.col(AclUser::getPassword) + "=:password")
-            ;
-            sqlGen.addParam("userId", 1);
-            sqlGen.addParam("token", "sss");
-            sqlGen.addParam("password", "e10adc3949ba59abbe56e057f20f883e");
+                            .from(tUser)
+                            .lJoin(tUserRole)
+                            .on(tUser.id() + "=" + tUserRole.col("user_id"))
+            
+                            .lJoin(tRoleList)
+                            .on(tUserRole.col(AclUserRole::getRoleId) + "=" + tRoleList.id())
+            
+                            .lJoin(tRole)
+                            .on(tUserRole.col(AclUserRole::getRoleId) + "=" + tRole.id())
+            
+                            .where(tUser.id() + "=:userId")
+                            .and(tUser.col(AclUser::getToken) + "=:token")
+                            .and(tUser.col(AclUser::getPassword) + "=:password")
+                            .or(tUser.col(AclUser::getPassword) + "=:password")
+                            .addParam("userId", 1)
+                            .addParam("token", "sss")
+                            .addParam("password", "e10adc3949ba59abbe56e057f20f883e");
     
             // ===================封装部分==============================
             List<AclUser> genrator = new MapToTable<AclUser, String>() {
